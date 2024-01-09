@@ -1,0 +1,59 @@
+package repository
+
+import (
+	"errors"
+	"order/pkg/models"
+
+	"gorm.io/gorm"
+)
+
+type OrderRepositoryImpl struct {
+	db *gorm.DB
+}
+
+func NewOrderRepositoryImpl(db *gorm.DB) OrderRepository {
+	return &OrderRepositoryImpl{db: db}
+}
+
+// Delete implements OrderRepository.
+func (o *OrderRepositoryImpl) Delete(orderId int) {
+	var order models.Order
+	result := o.db.Where("order_id = ?", orderId).Delete(&order)
+
+	panic(result.Error)
+}
+
+// FindAll implements OrderRepository.
+func (o *OrderRepositoryImpl) FindAll() (orders []models.Order) {
+	result := o.db.Find(&orders)
+	panic(result.Error)
+}
+
+// FindByID implements OrderRepository.
+func (o *OrderRepositoryImpl) FindByID(orderId int) (order models.Order, err error) {
+
+	result := o.db.Find(&order, orderId)
+
+	if result.Error != nil {
+		err = errors.New("Order not found")
+	}
+	err = nil
+	return
+}
+
+// Save implements OrderRepository.
+func (o *OrderRepositoryImpl) Save(order models.Order) {
+
+	result := o.db.Create(&order)
+
+	panic(result.Error)
+}
+
+// Update implements OrderRepository.
+func (o *OrderRepositoryImpl) Update(order models.Order) {
+
+	//result := o.db.Update(&order)
+
+	//panic(result.Error)
+
+}

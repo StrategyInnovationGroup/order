@@ -2,7 +2,6 @@ package initializer
 
 import (
 	"fmt"
-	"log"
 	"order/pkg/config"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -30,7 +29,7 @@ func DBConnection() *gorm.DB {
 	return db
 }
 
-func RunDBMigration() {
+func RunDBMigration() (err error) {
 
 	dbConfig = LoadDBConfig()
 
@@ -38,12 +37,21 @@ func RunDBMigration() {
 
 	m, err := migrate.New(
 		"file://pkg/db/migrate",
-		fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable&search_path=public", dbConfig.DB_USER, dbConfig.DB_PSWD, dbConfig.DB_HOST, dbConfig.DB_PORT, dbConfig.DB_NAME),
+		fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable", dbConfig.DB_USER, dbConfig.DB_PSWD, dbConfig.DB_HOST, dbConfig.DB_PORT, dbConfig.DB_NAME),
 	)
+
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	if err := m.Down(); err != nil {
+		return err
+	}
+
 	if err := m.Up(); err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
+
 }

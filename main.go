@@ -7,18 +7,31 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+
+	"github.com/golang-migrate/migrate/v4"
 )
 
-var DBConn *gorm.DB
+var dbConn *gorm.DB
 
 func init() {
 	fmt.Println("Loading Env vars ...")
 	initializer.LoadEnvVars()
 	fmt.Println("Env vars loaded successfully , initialization to DB started ...")
-	DBConn = initializer.DBConnection()
+	dbConn = initializer.DBConnection()
 	fmt.Println("DB connection completed. Migration Running ...")
-	initializer.RunDBMigration()
-	fmt.Println("Application started successfully .... ")
+	error := initializer.RunDBMigration()
+
+	if error == migrate.ErrNoChange {
+		fmt.Println("No change detected in migration ... ")
+		return
+	}
+
+	if error != nil {
+		fmt.Println("DB migration failed ... ")
+		return
+	}
+
+	fmt.Println("Application started successfully ... ")
 }
 
 func main() {
