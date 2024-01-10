@@ -26,7 +26,13 @@ func (o *OrderRepositoryImpl) Delete(orderId int) {
 // FindAll implements OrderRepository.
 func (o *OrderRepositoryImpl) FindAll() (orders []models.Order) {
 	result := o.db.Find(&orders)
-	panic(result.Error)
+
+	if result.Error != nil {
+		panic(result.Error)
+	}
+
+	return
+
 }
 
 // FindByID implements OrderRepository.

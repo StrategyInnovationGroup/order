@@ -19,11 +19,11 @@ func NewRouter(orderController *handler.OrderHandler) *gin.Engine {
 }
 
 func controllers(routerGroup *gin.RouterGroup, orderController *handler.OrderHandler) {
-	//routerGroup.GET("/", orderController.HandleGetAllOrders)
+	routerGroup.GET("/", orderController.HandleGetAllOrders)
 	routerGroup.GET("/:id", orderController.HandleGetOrderByID)
-	//routerGroup.POST("/", orderController.handleCreateOrder)
-	//routerGroup.PUT("/:id", orderController.handleUpdateOrderByID)
-	//routerGroup.DELETE("/:id", orderController.handleDeleteOrderByID)
+	routerGroup.POST("/", orderController.HandleCreateOrder)
+	routerGroup.PUT("/:id", orderController.HandleUpdateOrderByID)
+	routerGroup.DELETE("/:id", orderController.HandleDeleteOrderByID)
 }
 
 func handlePing(c *gin.Context) {

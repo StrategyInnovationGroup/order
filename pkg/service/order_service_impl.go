@@ -23,6 +23,20 @@ func (o *OrderServiceImpl) FindByID(orderId int) response.OrderResponse {
 
 }
 
+// GetAll implements OrderService.
+func (o *OrderServiceImpl) FindAll() []response.OrderResponse {
+	result := o.OrderRepository.FindAll()
+
+	var res []response.OrderResponse
+
+	for _, value := range result {
+		res = append(res, response.OrderResponse(value))
+	}
+
+	return res
+
+}
+
 func NewOrderServiceImpl(orderRepo repository.OrderRepository, validate *validator.Validate) OrderService {
 	return &OrderServiceImpl{
 		OrderRepository: orderRepo,
