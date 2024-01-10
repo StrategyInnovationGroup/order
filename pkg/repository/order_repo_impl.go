@@ -32,7 +32,7 @@ func (o *OrderRepositoryImpl) FindAll() (orders []models.Order) {
 // FindByID implements OrderRepository.
 func (o *OrderRepositoryImpl) FindByID(orderId int) (order models.Order, err error) {
 
-	result := o.db.Find(&order, orderId)
+	result := o.db.Find(&order, models.Order{OrderId: orderId})
 
 	if result.Error != nil {
 		err = errors.New("Order not found")

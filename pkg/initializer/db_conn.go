@@ -44,10 +44,6 @@ func RunDBMigration() (err error) {
 		return err
 	}
 
-	if err := m.Down(); err != nil {
-		return err
-	}
-
 	if err := m.Up(); err != nil {
 		return err
 	}
