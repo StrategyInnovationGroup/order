@@ -78,6 +78,13 @@ func (o *OrderServiceImpl) UpdateOrder(orderId int, request request.CreateOrderR
 
 }
 
+// DeleteOrderById implements OrderService.
+func (o *OrderServiceImpl) DeleteOrderById(orderId int) {
+
+	o.OrderRepository.Delete(orderId)
+
+}
+
 func NewOrderServiceImpl(orderRepo repository.OrderRepository, validate *validator.Validate) OrderService {
 	return &OrderServiceImpl{
 		OrderRepository: orderRepo,

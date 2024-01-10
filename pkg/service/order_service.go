@@ -10,4 +10,5 @@ type OrderService interface {
 	FindAll() []response.OrderResponse
 	CreateOrder(req request.CreateOrderRequest)
 	UpdateOrder(orderId int, req request.CreateOrderRequest)
+	DeleteOrderById(orderId int)
 }
