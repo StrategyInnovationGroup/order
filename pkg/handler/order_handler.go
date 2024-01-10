@@ -68,7 +68,29 @@ func (handler *OrderHandler) HandleCreateOrder(ctx *gin.Context) {
 }
 
 func (handler *OrderHandler) HandleUpdateOrderByID(ctx *gin.Context) {
-	ctx.String(400, "Bad Request")
+
+	orderId, err := strconv.Atoi(ctx.Param("id"))
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, "Bad Request")
+	}
+
+	orderRequest := request.CreateOrderRequest{}
+	err = ctx.ShouldBindJSON(&orderRequest)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, "Bad Request")
+	}
+
+	handler.orderService.UpdateOrder(orderId, orderRequest)
+
+	orderResponse := response.APIResponse{
+		Code:   http.StatusOK,
+		Status: "OK",
+		Data:   orderRequest,
+	}
+
+	ctx.JSON(http.StatusOK, orderResponse)
 }
 
 func (handler *OrderHandler) HandleDeleteOrderByID(ctx *gin.Context) {

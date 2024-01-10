@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 	"order/pkg/models"
 
 	"gorm.io/gorm"
@@ -58,10 +59,13 @@ func (o *OrderRepositoryImpl) Save(order models.Order) {
 }
 
 // Update implements OrderRepository.
-func (o *OrderRepositoryImpl) Update(order models.Order) {
+func (o *OrderRepositoryImpl) Update(orderId int, order models.Order) {
 
-	//result := o.db.Update(&order)
+	fmt.Printf("Order Id :- %v\n", orderId)
 
-	//panic(result.Error)
+	result := o.db.Model(&models.Order{}).Where("order_id = ? ", orderId).Updates(order)
+	if result.Error != nil {
+		panic(result.Error)
+	}
 
 }

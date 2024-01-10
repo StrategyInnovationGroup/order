@@ -58,6 +58,26 @@ func (o *OrderServiceImpl) CreateOrder(request request.CreateOrderRequest) {
 
 }
 
+// UpdateOrder implements OrderService.
+func (o *OrderServiceImpl) UpdateOrder(orderId int, request request.CreateOrderRequest) {
+
+	err := o.validate.Struct(request)
+
+	if err != nil {
+		panic(err)
+	}
+
+	orders := models.Order{
+		ProductName:   request.ProductName,
+		OrderType:     request.OrderType,
+		OrderPrice:    request.OrderPrice,
+		OrderQuantity: request.OrderQuantity,
+	}
+
+	o.OrderRepository.Update(orderId, orders)
+
+}
+
 func NewOrderServiceImpl(orderRepo repository.OrderRepository, validate *validator.Validate) OrderService {
 	return &OrderServiceImpl{
 		OrderRepository: orderRepo,
