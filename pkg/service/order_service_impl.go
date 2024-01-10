@@ -1,6 +1,8 @@
 package service
 
 import (
+	"order/pkg/models"
+	"order/pkg/models/request"
 	"order/pkg/models/response"
 	"order/pkg/repository"
 
@@ -34,6 +36,25 @@ func (o *OrderServiceImpl) FindAll() []response.OrderResponse {
 	}
 
 	return res
+
+}
+
+// CreateOrder implements OrderService.
+func (o *OrderServiceImpl) CreateOrder(request request.CreateOrderRequest) {
+	err := o.validate.Struct(request)
+
+	if err != nil {
+		panic(err)
+	}
+
+	orders := models.Order{
+		ProductName:   request.ProductName,
+		OrderType:     request.OrderType,
+		OrderPrice:    request.OrderPrice,
+		OrderQuantity: request.OrderQuantity,
+	}
+
+	o.OrderRepository.Save(orders)
 
 }
 

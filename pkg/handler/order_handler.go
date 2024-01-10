@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"order/pkg/models/request"
 	"order/pkg/models/response"
 	"order/pkg/service"
 	"strconv"
@@ -48,14 +49,28 @@ func (handler *OrderHandler) HandleGetOrderByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, orderResponse)
 }
 
-func (handler *OrderHandler) HandleCreateOrder(controller *gin.Context) {
-	controller.String(400, "Bad Request")
+func (handler *OrderHandler) HandleCreateOrder(ctx *gin.Context) {
+
+	orderRequest := request.CreateOrderRequest{}
+	err := ctx.ShouldBindJSON(&orderRequest)
+
+	if err != nil {
+		panic(err)
+	}
+
+	handler.orderService.CreateOrder(orderRequest)
+	orderResponse := response.APIResponse{
+		Code:   http.StatusOK,
+		Status: "OK",
+		Data:   orderRequest,
+	}
+	ctx.JSON(http.StatusOK, orderResponse)
 }
 
-func (handler *OrderHandler) HandleUpdateOrderByID(controller *gin.Context) {
-	controller.String(400, "Bad Request")
+func (handler *OrderHandler) HandleUpdateOrderByID(ctx *gin.Context) {
+	ctx.String(400, "Bad Request")
 }
 
-func (handler *OrderHandler) HandleDeleteOrderByID(controller *gin.Context) {
-	controller.String(400, "Bad Request")
+func (handler *OrderHandler) HandleDeleteOrderByID(ctx *gin.Context) {
+	ctx.String(400, "Bad Request")
 }

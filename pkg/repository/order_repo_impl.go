@@ -19,8 +19,9 @@ func NewOrderRepositoryImpl(db *gorm.DB) OrderRepository {
 func (o *OrderRepositoryImpl) Delete(orderId int) {
 	var order models.Order
 	result := o.db.Where("order_id = ?", orderId).Delete(&order)
-
-	panic(result.Error)
+	if result.Error != nil {
+		panic(result.Error)
+	}
 }
 
 // FindAll implements OrderRepository.
@@ -51,8 +52,9 @@ func (o *OrderRepositoryImpl) FindByID(orderId int) (order models.Order, err err
 func (o *OrderRepositoryImpl) Save(order models.Order) {
 
 	result := o.db.Create(&order)
-
-	panic(result.Error)
+	if result.Error != nil {
+		panic(result.Error)
+	}
 }
 
 // Update implements OrderRepository.
