@@ -9,6 +9,9 @@ build:
 run:
 	docker-compose -f $(DOCKER_COMPOSE) up -d
 
+gorun:
+	bash ./go-run.sh
+    
 stop:
 	docker-compose -f $(DOCKER_COMPOSE) down
 

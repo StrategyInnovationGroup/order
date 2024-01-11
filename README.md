@@ -24,3 +24,5 @@ sample order app built in go
 ## godotdev
 
 ## go-playground/validator/v10
+
+## uth0/go-jwt-middleware/v2

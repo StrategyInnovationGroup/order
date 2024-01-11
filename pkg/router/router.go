@@ -1,6 +1,7 @@
 package router
 
 import (
+	"order/pkg/auth"
 	"order/pkg/handler"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +13,7 @@ func NewRouter(orderController *handler.OrderHandler) *gin.Engine {
 	baseRouterGroup := router.Group("/api/v1/")
 	baseRouterGroup.GET("ping", handlePing)
 	orderRouterGroup := baseRouterGroup.Group("/order")
+	orderRouterGroup.Use(auth.ValidateJWTToken())
 
 	controllers(orderRouterGroup, orderController)
 
