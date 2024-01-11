@@ -28,3 +28,5 @@ sample order app built in go
 ## auth0/go-jwt-middleware/v2
 
 ## Configuring Auth0 for Authorization
+
+Auth0 Enpoint - https://az-fsd-grp.us.auth0.com/
