@@ -13,46 +13,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	// The signing key for the token.
-	signingKey = []byte("secret")
-
-	// The issuer of our token.
-	issuer = "go-jwt-middleware-example"
-
-	// The audience of our token.
-	audience = []string{"audience-example"}
-
-	// Our token must be signed using this data.
-	keyFunc = func(ctx context.Context) (interface{}, error) {
-		return signingKey, nil
-	}
-
-	// We want this struct to be filled in with
-	// our custom claims from the token.
-	customClaims = func() validator.CustomClaims {
-		return &CustomClaimsExample{}
-	}
-)
+var customClaims = func() validator.CustomClaims {
+	return &CustomClaimsExample{}
+}
 
 type authConfig struct {
-	AUTH_URL      string
-	CLIENT_ID     string
-	CLIENT_SECRET string
+	AUTH_ISSUER_URL    string
+	SECRET_SIGNING_KEY string
+	AUTH_AUD           string
 }
 
 func loadAuthConfig() *authConfig {
 	return &authConfig{
-		AUTH_URL:      os.Getenv("AUTH_URL"),
-		CLIENT_ID:     os.Getenv("CLIENT_ID"),
-		CLIENT_SECRET: os.Getenv("CLIENT_SECRET"),
+		AUTH_ISSUER_URL:    os.Getenv("AUTH_ISSUER_URL"),
+		SECRET_SIGNING_KEY: os.Getenv("SECRET_SIGNING_KEY"),
+		AUTH_AUD:           os.Getenv("AUTH_AUD"),
 	}
 }
 
 type CustomClaimsExample struct {
-	Name         string `json:"name"`
-	Username     string `json:"username"`
-	ShouldReject bool   `json:"shouldReject,omitempty"`
+	Issuer       string `json:"iss"`
+	Sub          string `json:"sub"`
+	Azp          string `json:"azp"`
+	ShouldReject bool   `json:"shouldreject,omitempty"`
 }
 
 // Validate errors out if `ShouldReject` is true.
@@ -67,23 +50,25 @@ func (c *CustomClaimsExample) Validate(ctx context.Context) error {
 // that will check the validity of our JWT.
 func ValidateJWTToken() gin.HandlerFunc {
 
-	loadAuthConfig()
+	jwtConfig := loadAuthConfig()
 
 	// Set up the validator.
 	jwtValidator, err := validator.New(
-		keyFunc,
+		func(ctx context.Context) (interface{}, error) {
+			return []byte(jwtConfig.SECRET_SIGNING_KEY), nil
+		},
 		validator.HS256,
-		issuer,
-		audience,
+		jwtConfig.AUTH_ISSUER_URL,
+		[]string{jwtConfig.AUTH_AUD},
 		validator.WithCustomClaims(customClaims),
 		validator.WithAllowedClockSkew(30*time.Second),
 	)
 	if err != nil {
-		log.Fatalf("failed to set up the validator: %v", err)
+		log.Fatalf("failed to set up the validator:  %v", err)
 	}
 
 	errorHandler := func(w http.ResponseWriter, r *http.Request, err error) {
-		log.Printf("Encountered error while validating JWT: %v", err)
+		log.Printf("Encountered error while validating JWT:  %v", err)
 	}
 
 	middleware := jwtmiddleware.New(

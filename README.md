@@ -25,4 +25,6 @@ sample order app built in go
 
 ## go-playground/validator/v10
 
-## uth0/go-jwt-middleware/v2
+## auth0/go-jwt-middleware/v2
+
+## Configuring Auth0 for Authorization
